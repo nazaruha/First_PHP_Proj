@@ -19,8 +19,7 @@ include $_SERVER["DOCUMENT_ROOT"]."/header.php";
         <form class=" mt-5 col-md-6 offset-md-3">
             <div class="mb-3">
                 <label for="email" class="form-label">Пошта</label>
-                <input type="email" class="form-control" id="email" aria-describedby="emailHelp">
-                <div id="emailHelp" class="form-text">Ми не поділимось вашою поштою</div>
+                <input type="email" class="form-control" id="email">
             </div>
             <div class="mb-3">
                 <label for="password" class="form-label">Пароль</label>
