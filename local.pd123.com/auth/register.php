@@ -1,28 +1,34 @@
 <?php
 $name = "";
+$surname = "";
 $email = "";
+$phone = "";
 $password = "";
 if($_SERVER["REQUEST_METHOD"]==="POST") {
-    echo "<br/><br/><br/>";
     if(isset($_POST["name"])) // перевіряє присутність змінної в масиві
         $name = $_POST["name"]; // супер глобальний масив, який зберігає значення полів форми
+    if (isset($_POST["surname"]))
+        $surname = $_POST["surname"];
     if(isset($_POST["email"]))
         $email = $_POST["email"];
     if(isset($_POST["password"]))
         $password = $_POST["password"];
-    if(!empty($name) && !empty($email) && !empty($password)) {
+    if (isset($_POST["phone"])) {
+        $phone = $_POST["phone"];
+    }
+    if(!empty($name) && !empty($surname) && !empty($email) && !empty($password)) {
         try {
             // Підключення до Бази Даних
             $dbh = new PDO('mysql:host=localhost;dbname=pd123', "root", "");
             // Створює запит до БД
-            $sql = "INSERT INTO users (name, email, password) VALUES(?, ?, ?);";
+            $sql = "INSERT INTO users (name, surname, email, password, phone) VALUES(?, ?, ?, ?, ?);";
             $stmt = $dbh->prepare($sql); // створити параметризований запит
-            $stmt->execute([$name, $email, $password]);
+            $stmt->execute([$name, $surname, $email, $password, $phone]);
             $dbh = null;
             header('Location: /'); // перехід на головну сторінку
             exit;
         } catch (PDOException $e) {
-            print "Error!: " . $e->getMessage() . "<br/>";
+            print "Error Register!: " . $e->getMessage() . "<br/>";
             die();
         }
     }
@@ -47,19 +53,50 @@ include $_SERVER["DOCUMENT_ROOT"]."/header.php";
 <main class="mt-3">
     <div class="container">
         <h1 class="text-center">Реєстрація</h1>
-        <form method="POST" enctype="multipart/form-data" class="mt-5 col-md-6 offset-md-3">
-
-            <div class="mb-3">
-                <label for="name" class="form-label" >Ім'я</label>
-                <input type="text" class="form-control" id="name" name="name" value="<?php echo $name; ?>"/>
-                <div class="invalid-feedback">
-                    Вкажіть Ім'я
+        <form method="POST" enctype="multipart/form-data" class="mt-5 col-md-6 offset-md-3 needs-validation" novalidate>
+            <div class="mb-3 row">
+                <div class="col-md-6">
+                    <label for="name" class="form-label" >Ім'я</label>
+                    <div class="input-group has-validation">
+                        <input
+                                type="text"
+                                class="form-control"
+                                id="name"
+                                name="name"
+                                value="<?php echo $name; ?>"
+                                required
+                        />
+                        <div class="invalid-feedback">
+                            Вкажіть Ім'я
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <label for="surname" class="form-label" >Ім'я</label>
+                    <input
+                        type="text"
+                        class="form-control"
+                        id="surname"
+                        name="surname"
+                        value="<?php echo $surname; ?>"
+                        required
+                    />
+                    <div class="invalid-feedback">
+                        Вкажіть Фамілію
+                    </div>
                 </div>
             </div>
 
             <div class="mb-3">
                 <label for="email" class="form-label">Пошта</label>
-                <input type="email" class="form-control" id="email" name="email" value="<?php echo $email; ?>" aria-describedby="emailHelp">
+                <input
+                    type="email"
+                    class="form-control"
+                    id="email" name="email"
+                    value="<?php echo $email; ?>"
+                    aria-describedby="emailHelp"
+                    required
+                >
                 <div id="emailHelp" class="form-text">Ми не поділимось вашою поштою</div>
                 <div class="invalid-feedback">
                     Вкажіть пошту
@@ -67,8 +104,25 @@ include $_SERVER["DOCUMENT_ROOT"]."/header.php";
             </div>
 
             <div class="mb-3">
+                <label for="phone" class="form-label">Телефон</label>
+                <input
+                    type="text"
+                    class="form-control"
+                    id="phone"
+                    name="phone"
+                    value="<?php echo $phone; ?>"
+                >
+            </div>
+
+            <div class="mb-3">
                 <label for="password" class="form-label">Пароль</label>
-                <input type="password" class="form-control" id="password" name="password">
+                <input
+                    type="password"
+                    class="form-control"
+                    id="password"
+                    name="password"
+                    required
+                >
                 <div class="invalid-feedback">
                     Вкажіть пароль
                 </div>
@@ -106,6 +160,7 @@ include $_SERVER["DOCUMENT_ROOT"]."/header.php";
         }
     }
 </script>
-<script src="js/bootstrap.bundle.min.js"></script>
+<script src="../js/bootstrap-validation.js"></script>
+<script src="../js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
