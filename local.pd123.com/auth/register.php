@@ -1,3 +1,34 @@
+<?php
+$name = "";
+$email = "";
+$password = "";
+if($_SERVER["REQUEST_METHOD"]==="POST") {
+    echo "<br/><br/><br/>";
+    if(isset($_POST["name"])) // перевіряє присутність змінної в масиві
+        $name = $_POST["name"]; // супер глобальний масив, який зберігає значення полів форми
+    if(isset($_POST["email"]))
+        $email = $_POST["email"];
+    if(isset($_POST["password"]))
+        $password = $_POST["password"];
+    if(!empty($name) && !empty($email) && !empty($password)) {
+        try {
+            // Підключення до Бази Даних
+            $dbh = new PDO('mysql:host=localhost;dbname=pd123', "root", "");
+            // Створює запит до БД
+            $sql = "INSERT INTO users (name, email, password) VALUES(?, ?, ?);";
+            $stmt = $dbh->prepare($sql); // створити параметризований запит
+            $stmt->execute([$name, $email, $password]);
+            $dbh = null;
+            header('Location: /'); // перехід на головну сторінку
+            exit;
+        } catch (PDOException $e) {
+            print "Error!: " . $e->getMessage() . "<br/>";
+            die();
+        }
+    }
+}
+?>
+
 <!doctype html>
 <html lang="en">
 <head>
@@ -18,32 +49,29 @@ include $_SERVER["DOCUMENT_ROOT"]."/header.php";
         <h1 class="text-center">Реєстрація</h1>
         <form method="POST" enctype="multipart/form-data" class="mt-5 col-md-6 offset-md-3">
 
-            <div class="mb-3 row">
-
-                <div class="col-md-6">
-                    <label for="firstName" class="form-label" >Ім'я</label>
-                    <input type="text" class="form-control" id="firstName"/>
-                </div>
-                <div class="col-md-6">
-                    <label for="secondName" class="form-label">Фамілія</label>
-                    <input type="text" class="form-control" id="secondName"/>
+            <div class="mb-3">
+                <label for="name" class="form-label" >Ім'я</label>
+                <input type="text" class="form-control" id="name" name="name" value="<?php echo $name; ?>"/>
+                <div class="invalid-feedback">
+                    Вкажіть Ім'я
                 </div>
             </div>
 
             <div class="mb-3">
                 <label for="email" class="form-label">Пошта</label>
-                <input type="email" class="form-control" id="email" aria-describedby="emailHelp">
+                <input type="email" class="form-control" id="email" name="email" value="<?php echo $email; ?>" aria-describedby="emailHelp">
                 <div id="emailHelp" class="form-text">Ми не поділимось вашою поштою</div>
+                <div class="invalid-feedback">
+                    Вкажіть пошту
+                </div>
             </div>
 
             <div class="mb-3">
                 <label for="password" class="form-label">Пароль</label>
-                <input type="password" class="form-control" id="password">
-            </div>
-
-            <div class="mb-4">
-                <label for="number" class="form-label">Телефон</label>
-                <input type="text" class="form-control" id="number">
+                <input type="password" class="form-control" id="password" name="password">
+                <div class="invalid-feedback">
+                    Вкажіть пароль
+                </div>
             </div>
 
             <div class="mb-3">
@@ -52,6 +80,9 @@ include $_SERVER["DOCUMENT_ROOT"]."/header.php";
                     <img src="../assets/selectImage.png" id="select-image" class="d-block"/>
                 </label>
                 <input type="file" id="file" name="file" class="d-none" onchange="selectImage()"/>
+                <div class="invalid-feedback">
+                    Вкажіть Фотографію
+                </div>
             </div>
             <button type="submit" name="submit" class="btn btn-primary">Зареєстуватись</button>
         </form>
@@ -60,9 +91,9 @@ include $_SERVER["DOCUMENT_ROOT"]."/header.php";
 
 <script>
     function selectImage() {
-        var img = document.getElementById("select-image");
-        var file = document.getElementById("file").files[0];
-        var reader = new FileReader();
+        let img = document.getElementById("select-image");
+        let file = document.getElementById("file").files[0];
+        let reader = new FileReader();
 
         reader.onloadend = function() {
             img.src = reader.result;
