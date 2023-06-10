@@ -50,7 +50,7 @@ if($_SERVER["REQUEST_METHOD"]==="POST") {
     if(!empty($name) && !empty($surname) && !empty($email) && !empty($password)) {
         try {
             // Підключення до Бази Даних
-            include ("../connection_database.php");
+            include("connection_database.php");
             if (isset($dbh)) {
                 // Створює запит до БД
                 $sql = "INSERT INTO users (name, surname, email, password, phone) VALUES(?, ?, ?, ?, ?);";
@@ -68,8 +68,7 @@ if($_SERVER["REQUEST_METHOD"]==="POST") {
 }
 ?>
 
-<?php //include $_SERVER["DOCUMENT_ROOT"]."../head.php"; ?>
-<?php include("head.php") ?>
+<?php include $_SERVER["DOCUMENT_ROOT"]."/head.php"; ?>
 <main class="mt-3">
     <div class="container">
         <h1 class="text-center">Реєстрація</h1>
@@ -157,7 +156,7 @@ if($_SERVER["REQUEST_METHOD"]==="POST") {
             <div class="mb-3">
                 <label class="form-label" for="file">
                     Оберіть фотографію
-                    <img src="../assets/selectImage.png" id="select-image" class="d-block"/>
+                    <img src="assets/selectImage.png" id="select-image" class="d-block"/>
                 </label>
                 <input type="file" id="file" name="file" class="d-none" onchange="selectImage()"/>
                 <div class="invalid-feedback">
@@ -186,7 +185,5 @@ if($_SERVER["REQUEST_METHOD"]==="POST") {
         }
     }
 </script>
-<script src="../js/bootstrap-validation.js"></script>
-<script src="../js/bootstrap.bundle.min.js"></script>
-</body>
-</html>
+<script src="js/bootstrap-validation.js"></script>
+<?php include $_SERVER["DOCUMENT_ROOT"]."/footer.php" ?>
