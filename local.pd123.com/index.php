@@ -11,14 +11,15 @@
                 Створити Користувача
                 <i class="fa fa-user-plus fs-3" aria-hidden="true"></i>
             </a>
-            <table class="table">
+            <table class="table ">
                 <thead>
                 <tr>
                     <th scope="col">Id</th>
-                    <th scope="col">Name</th>
-                    <th scope="col">Surname</th>
-                    <th scope="col">Email</th>
-                    <th scope="col">Phone</th>
+                    <th scope="col">Ім'я</th>
+                    <th scope="col">Фамілія</th>
+                    <th scope="col">Пошта</th>
+                    <th scope="col">Телефон</th>
+                    <th scope="col">Фотографія</th>
                     <th></th> <!-- delete row -->
                     <th></th> <!-- edit row -->
                 </tr>
@@ -28,7 +29,7 @@
                 include $_SERVER["DOCUMENT_ROOT"] . "/connection_database.php"; // підключились до бази
                 if (isset($dbh)) {
                     // use the connection here
-                    $stm = $dbh->query('SELECT id, name, surname, email, phone FROM users');
+                    $stm = $dbh->query('SELECT id, name, surname, email, phone, image FROM users');
 
                     // fetch all rows into array, by default PDO::FETCH_BOTH is used
                     $rows = $stm->fetchAll();
@@ -41,6 +42,9 @@
                                     <td>$row[2]</td>
                                     <td>$row[3]</td>
                                     <td>$row[4]</td>
+                                    <td>
+                                        <img src='assets/userImages/$row[5]' width='50%'/>
+                                    </td>
                                     <td>
                                         <a href='/editUser.php?id=$row[0]' class='text-warning' data-edit='$row[0]'>
                                             <i class='fa fa-pencil fs-4' aria-hidden=true></i>
