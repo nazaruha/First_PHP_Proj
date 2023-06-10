@@ -7,6 +7,10 @@
             echo "<h2>Текст через echo</h2>"; // echo -> виводить html на сайт. Інтерпретується в html код
             ?>
         -->
+            <a class="btn btn-success mb-3 fs-5" href="/register.php">
+                Створити Користувача
+                <i class="fa fa-user-plus fs-3" aria-hidden="true"></i>
+            </a>
             <table class="table">
                 <thead>
                 <tr>
