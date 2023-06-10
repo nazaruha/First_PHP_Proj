@@ -16,70 +16,60 @@ if($_SERVER["REQUEST_METHOD"]==="POST") {
         $password = $_POST["password"];
     if (isset($_POST["phone"]))
         $phone = $_POST["phone"];
-    if (isset($_FILES["file"])) {
-        $file = $_FILES["file"];
-        $fileName = $file['name'];
-        $fileTmpName = $file['tmp_name']; // file location
-        $fileSize = $file['size'];
-        $fileError = $file['error'];
-        $fileType = $file['type'];
-        echo "<br/><br/><br/>$fileName<br/>$fileTmpName<br/>$fileSize<br/>$fileError<br/>$fileType";
-
-        $fileExt = explode('.', $fileName);
-        $fileActualExt = strtolower($fileExt[1]); // end($fileExt)
-        echo "<br/> actExt -> $fileActualExt";
-
-        $allowedExt = array('jpg', 'jpeg', 'png', 'gif');
-
-        if (!in_array($fileActualExt, $allowedExt)) {
-            // Wrong file extension
-            // make image red border
-            die();
-        }
-        if ($fileError !== 0) {
-            // There was an error uploading your file;
-            die();
-        }
-
-        $fileNameNew = uniqid().'.'.$fileActualExt; // get type format in seconds from actual time + . + file extension
-        $fileDestination = '../assets/useImages/'.$fileNameNew;
-        move_uploaded_file($fileTmpName, $fileDestination);
-    }
-
-//    if(!empty($name) && !empty($surname) && !empty($email) && !empty($password) && !empty($file)) {
-//        try {
-//            // Підключення до Бази Даних
-//            $dbh = new PDO('mysql:host=localhost;dbname=pd123', "root", "");
-//            // Створює запит до БД
-//            $sql = "INSERT INTO users (name, surname, email, password, phone) VALUES(?, ?, ?, ?, ?);";
-//            $stmt = $dbh->prepare($sql); // створити параметризований запит
-//            $stmt->execute([$name, $surname, $email, $password, $phone]);
-//            $dbh = null;
-//            header('Location: /'); // перехід на головну сторінку
-//            exit;
-//        } catch (PDOException $e) {
-//            print "Error Register!: " . $e->getMessage() . "<br/>";
+    //IMAGE ERROR WORK
+//    if (isset($_FILES["file"])) {
+//        $file = $_FILES["file"];
+//        $fileName = $file['name'];
+//        $fileTmpName = $file['tmp_name']; // file location
+//        $fileSize = $file['size'];
+//        $fileError = $file['error'];
+//        $fileType = $file['type'];
+//        echo "<br/><br/><br/>$fileName<br/>$fileTmpName<br/>$fileSize<br/>$fileError<br/>$fileType";
+//
+//        $fileExt = explode('.', $fileName);
+//        $fileActualExt = strtolower($fileExt[1]); // end($fileExt)
+//        echo "<br/> actExt -> $fileActualExt";
+//
+//        $allowedExt = array('jpg', 'jpeg', 'png', 'gif');
+//
+//        if (!in_array($fileActualExt, $allowedExt)) {
+//            // Wrong file extension
+//            // make image red border
 //            die();
 //        }
+//        if ($fileError !== 0) {
+//            // There was an error uploading your file;
+//            die();
+//        }
+//
+//        $fileNameNew = uniqid().'.'.$fileActualExt; // get type format in seconds from actual time + . + file extension
+//        $fileDestination = '../assets/useImages/'.$fileNameNew;
+//        move_uploaded_file($fileTmpName, $fileDestination);
 //    }
+
+    if(!empty($name) && !empty($surname) && !empty($email) && !empty($password)) {
+        try {
+            // Підключення до Бази Даних
+            include ("../connection_database.php");
+            if (isset($dbh)) {
+                // Створює запит до БД
+                $sql = "INSERT INTO users (name, surname, email, password, phone) VALUES(?, ?, ?, ?, ?);";
+                $stmt = $dbh->prepare($sql); // створити параметризований запит
+                $stmt->execute([$name, $surname, $email, $password, $phone]);
+                $dbh = null;
+                header('Location: /'); // перехід на головну сторінку
+            }
+            exit;
+        } catch (PDOException $e) {
+            print "Error Register!: " . $e->getMessage() . "<br/>";
+            die();
+        }
+    }
 }
 ?>
 
-<!doctype html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport"
-          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Document</title>
-    <link rel="stylesheet" href="../css/bootstrap.min.css"/>
-    <link rel="stylesheet" href="../css/site.css">
-</head>
-<body>
-<?php
-include $_SERVER["DOCUMENT_ROOT"]."/header.php";
-?>
+<?php //include $_SERVER["DOCUMENT_ROOT"]."../head.php"; ?>
+<?php include("head.php") ?>
 <main class="mt-3">
     <div class="container">
         <h1 class="text-center">Реєстрація</h1>
