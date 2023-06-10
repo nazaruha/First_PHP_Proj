@@ -15,6 +15,8 @@
                     <th scope="col">Surname</th>
                     <th scope="col">Email</th>
                     <th scope="col">Phone</th>
+                    <th></th> <!-- delete row -->
+                    <th></th> <!-- edit row -->
                 </tr>
                 </thead>
                 <tbody>
@@ -35,6 +37,11 @@
                                     <td>$row[2]</td>
                                     <td>$row[3]</td>
                                     <td>$row[4]</td>
+                                    <td>
+                                        <a href='/editUser.php?id=$row[0]' class='text-warning' data-edit='$row[0]'>
+                                            <i class='fa fa-pencil fs-4' aria-hidden=true></i>
+                                        </a>
+                                    </td>
                                     <td>
                                         <a href='/delete.php?id=$row[0]' class='text-danger' data-delete='$row[0]'>
                                             <i class='fa fa-times fs-4'></i>
