@@ -177,22 +177,6 @@ if($_SERVER["REQUEST_METHOD"]==="POST") {
     </div>
 </main>
 
-<script>
-    function selectImage() {
-        let img = document.getElementById("select-image");
-        let file = document.getElementById("file").files[0];
-        let reader = new FileReader();
-
-        reader.onloadend = function() {
-            img.src = reader.result;
-        }
-
-        if (file) {
-            reader.readAsDataURL(file)
-        } else {
-            img.src = "../assets/selectImage.png"
-        }
-    }
-</script>
+<script src="js/select-image.js"></script>
 <script src="js/bootstrap-validation.js"></script>
 <?php include $_SERVER["DOCUMENT_ROOT"]."/footer.php" ?>
