@@ -23,7 +23,6 @@ if($_SERVER["REQUEST_METHOD"]==="POST") {
         $password = $_POST["password"];
     if (isset($_POST["phone"]))
         $phone = $_POST["phone"];
-    //IMAGE ERROR WORK
     if (isset($_FILES["file"])) {
         $file = $_FILES["file"];
         $fileName = $file['name'];
