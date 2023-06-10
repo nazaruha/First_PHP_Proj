@@ -4,6 +4,13 @@ $surname = "";
 $email = "";
 $phone = "";
 $password = "";
+$file = [];
+$fileName = "";
+$fileNameNew = ""; // new name which will be in the db;
+$fileTmpName = "";
+$fileSize = "";
+$fileError = "";
+$fileType = "";
 if($_SERVER["REQUEST_METHOD"]==="POST") {
     echo "<br/><br/><br/> POST METHOD";
     if(isset($_POST["name"])) // перевіряє присутність змінної в масиві
@@ -17,45 +24,47 @@ if($_SERVER["REQUEST_METHOD"]==="POST") {
     if (isset($_POST["phone"]))
         $phone = $_POST["phone"];
     //IMAGE ERROR WORK
-//    if (isset($_FILES["file"])) {
-//        $file = $_FILES["file"];
-//        $fileName = $file['name'];
-//        $fileTmpName = $file['tmp_name']; // file location
-//        $fileSize = $file['size'];
-//        $fileError = $file['error'];
-//        $fileType = $file['type'];
-//        echo "<br/><br/><br/>$fileName<br/>$fileTmpName<br/>$fileSize<br/>$fileError<br/>$fileType";
-//
-//        $fileExt = explode('.', $fileName);
-//        $fileActualExt = strtolower($fileExt[1]); // end($fileExt)
-//        echo "<br/> actExt -> $fileActualExt";
-//
-//        $allowedExt = array('jpg', 'jpeg', 'png', 'gif');
-//
-//        if (!in_array($fileActualExt, $allowedExt)) {
-//            // Wrong file extension
-//            // make image red border
-//            die();
-//        }
-//        if ($fileError !== 0) {
-//            // There was an error uploading your file;
-//            die();
-//        }
-//
-//        $fileNameNew = uniqid().'.'.$fileActualExt; // get type format in seconds from actual time + . + file extension
-//        $fileDestination = '../assets/useImages/'.$fileNameNew;
-//        move_uploaded_file($fileTmpName, $fileDestination);
-//    }
+    if (isset($_FILES["file"])) {
+        $file = $_FILES["file"];
+        $fileName = $file['name'];
+        $fileTmpName = $file['tmp_name']; // file location
+        $fileSize = $file['size'];
+        $fileError = $file['error'];
+        $fileType = $file['type'];
+        echo "<br/><br/><br/>$fileName<br/>$fileTmpName<br/>$fileSize<br/>$fileError<br/>$fileType";
 
-    if(!empty($name) && !empty($surname) && !empty($email) && !empty($password)) {
+        $fileExt = explode('.', $fileName);
+        $fileActualExt = strtolower($fileExt[1]); // end($fileExt)
+        echo "<br/> actExt -> $fileActualExt";
+
+        $allowedExt = array('jpg', 'jpeg', 'png', 'gif');
+
+        if (!in_array($fileActualExt, $allowedExt)) {
+            // Wrong file extension
+            // make image red border
+            die();
+        }
+        if ($fileError !== 0) {
+            // There was an error uploading your file;
+            die();
+        }
+
+        $fileNameNew = uniqid().'.'.$fileActualExt; // get type format in seconds from actual time + . + file extension
+        $fileDestination = __DIR__ . '\\assets\\userImages\\' . $fileNameNew;
+
+        define ('SITE_ROOT', realpath(dirname(__FILE__)));
+        move_uploaded_file($fileTmpName, $fileDestination);
+    }
+
+    if(!empty($name) && !empty($surname) && !empty($email) && !empty($password) && count($file) > 0) {
         try {
             // Підключення до Бази Даних
             include("connection_database.php");
             if (isset($dbh)) {
                 // Створює запит до БД
-                $sql = "INSERT INTO users (name, surname, email, password, phone) VALUES(?, ?, ?, ?, ?);";
+                $sql = "INSERT INTO users (name, surname, email, password, phone, image) VALUES(?, ?, ?, ?, ?, ?);";
                 $stmt = $dbh->prepare($sql); // створити параметризований запит
-                $stmt->execute([$name, $surname, $email, $password, $phone]);
+                $stmt->execute([$name, $surname, $email, $password, $phone, $fileNameNew]);
                 $dbh = null;
                 header('Location: /'); // перехід на головну сторінку
             }
@@ -158,7 +167,7 @@ if($_SERVER["REQUEST_METHOD"]==="POST") {
                     Оберіть фотографію
                     <img src="assets/selectImage.png" id="select-image" class="d-block"/>
                 </label>
-                <input type="file" id="file" name="file" class="d-none" onchange="selectImage()"/>
+                <input type="file" id="file" name="file" class="d-none" onchange="selectImage()" required/>
                 <div class="invalid-feedback">
                     Вкажіть Фотографію
                 </div>
