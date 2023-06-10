@@ -121,7 +121,7 @@ if($_SERVER["REQUEST_METHOD"]==="POST") {
                 >
                 <div id="emailHelp" class="form-text">Ми не поділимось вашою поштою</div>
                 <div class="invalid-feedback">
-                    Вкажіть пошту
+                    Вкажіть Пошту
                 </div>
             </div>
 
