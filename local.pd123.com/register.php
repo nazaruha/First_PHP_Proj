@@ -51,7 +51,6 @@ if($_SERVER["REQUEST_METHOD"]==="POST") {
         $fileNameNew = uniqid().'.'.$fileActualExt; // get type format in seconds from actual time + . + file extension
         $fileDestination = __DIR__ . '\\assets\\userImages\\' . $fileNameNew;
 
-        define ('SITE_ROOT', realpath(dirname(__FILE__)));
         move_uploaded_file($fileTmpName, $fileDestination);
     }
 
