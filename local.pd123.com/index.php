@@ -43,7 +43,7 @@
                                     <td>$row[3]</td>
                                     <td>$row[4]</td>
                                     <td>
-                                        <img src='assets/userImages/$row[5]' width='50%'/>
+                                        <img src='assets/userImages/$row[5]' img-data='$row[0]' width='10%'/>
                                     </td>
                                     <td>
                                         <a href='/editUser.php?id=$row[0]' class='text-warning' data-edit='$row[0]'>
@@ -71,13 +71,23 @@
 <script>
     window.addEventListener("load", (event) => {
         let hrefDelete = ""; // посилання з нашого тега a
+        let imageDeletePath = "";
+        const rootDirectory = window.location.protocol + '//' + window.location.host + '/';
         const delBtns = document.querySelectorAll("[data-delete]"); // шукаєм всі кнопочки, які мають data-delete
+        const images = document.querySelectorAll("[img-data]");
         const deleteModal = new bootstrap.Modal(document.getElementById("deleteModal"));
         for (i = 0; i < delBtns.length; i++) {
+            const imgSrc = images[i].getAttribute("src");
             delBtns[i].onclick =  function(e) {
                 e.preventDefault();  // відміняє стандартну поведінку тега <a></a>
                 console.log("Ви хочете видалити елемент");
                 hrefDelete = this.href; // стягуємо href значення з тега a
+
+                if (imgSrc !== "assets/userImages/") {
+                    imageDeletePath = rootDirectory + imgSrc;
+                    console.log("Image Delete Src", imageDeletePath);
+                }
+
                 deleteModal.show();
             }
         }
@@ -85,6 +95,9 @@
             axios.post(hrefDelete)
                 .then((resp) => {
                     deleteModal.hide(); // ховаєм модалку
+
+
+
                     location.reload(); // перезагружаєм сторінку
                 })
         }

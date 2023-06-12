@@ -68,11 +68,15 @@ if (isset($id)) {
             }
 
             if (!empty($name) && !empty($surname) && !empty($email) && !empty($fileNameNew)) {
-                $sql = "UPDATE users SET name=?, surname=?, phone=?, email=?, image=? WHERE id = ?";
-                $stmt = $dbh->prepare($sql);
-                $stmt->execute([$name, $surname, $phone, $email, $fileNameNew, $user[0]]);
-                $dbh = null;
-                header('Location: /');
+                try {
+                    $sql = "UPDATE users SET name=?, surname=?, phone=?, email=?, image=? WHERE id = ?";
+                    $stmt = $dbh->prepare($sql);
+                    $stmt->execute([$name, $surname, $phone, $email, $fileNameNew, $user[0]]);
+                    $dbh = null;
+                    header('Location: /');
+                } catch (PDOException $e) {
+
+                }
             }
         }
     }
