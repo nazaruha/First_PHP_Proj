@@ -5,13 +5,31 @@ import ReactDOM from 'react-dom/client';
 import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
+import { BrowserRouter, Route, Routes } from "react-router-dom";
+import DefaultLayout from "./containers/default/DefaultLayout";
+import CategoryListPage from "./components/admin/categories/list/CategoryListPage";
+import CategoryCreatePage from "./components/admin/categories/create/CategoryCreatePage";
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
 );
 root.render(
   //<React.StrictMode> -> ЦЕ ТРЕБА  УБРАТЬ, ЩОБ НЕ БУЛО ДУПЛІКАТІВ ОТРИМАННЯ ДАНИХ З СЄРВАКА
-  <App />
+  <BrowserRouter>
+    <Routes>
+      <Route path="/" element={<DefaultLayout />}>
+        <Route index element={<App />} />
+      </Route>
+
+      <Route path="/admin" element={<DefaultLayout />}>
+        <Route index element={<App />} />
+        <Route path="categories">
+          <Route index element={<CategoryListPage />} />
+          <Route path="create" element={<CategoryCreatePage />} />
+        </Route>
+      </Route>
+    </Routes>
+  </BrowserRouter >
 );
 
 // If you want to start measuring performance in your app, pass a function
