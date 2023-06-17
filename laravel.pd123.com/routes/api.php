@@ -20,8 +20,9 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 });
 
 Route::get("/category", [CategoryController::class, "index"]); // Добавляємо шлях до нашого контролера і його функцій
-Route::post('/category-create', [CategoryController::class, "store"]);
-Route::put("/category-put/{id}", [CategoryController::class, "put"]);
-Route::delete("/category-delete/{id}", [CategoryController::class, "delete"]);
+Route::post('/category', [CategoryController::class, "store"]);
+Route::post("/category/edit/{id}", [CategoryController::class, "put"]);
+Route::delete("/category/{id}", [CategoryController::class, "delete"]);
+Route::get("/category/{id}", [CategoryController::class, "getById"]);
 
 
