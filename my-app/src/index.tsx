@@ -9,6 +9,7 @@ import { BrowserRouter, Route, Routes } from "react-router-dom";
 import DefaultLayout from "./containers/default/DefaultLayout";
 import CategoryListPage from "./components/admin/categories/list/CategoryListPage";
 import CategoryCreatePage from "./components/admin/categories/create/CategoryCreatePage";
+import CategoryEditPage from "./components/admin/categories/edit/CategoryEditPage";
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
@@ -26,6 +27,7 @@ root.render(
         <Route path="categories">
           <Route index element={<CategoryListPage />} />
           <Route path="create" element={<CategoryCreatePage />} />
+          <Route path="edit/:id" element={<CategoryEditPage />} />
         </Route>
       </Route>
     </Routes>
