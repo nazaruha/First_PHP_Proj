@@ -1,10 +1,9 @@
-import { CategoryCreateSchema } from "../validation";
-import { useFormik } from "formik";
+import {CategoryCreateSchema} from "../validation";
+import {useFormik} from "formik";
 import uniqid from 'uniqid';
 import classNames from "classnames";
-import { ICategoryCreate } from "../types";
-import { useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import {ICategoryCreate} from "../types";
+import {useNavigate} from "react-router-dom";
 import http from "../../../../http";
 
 const CategoryCreatePage = () => {
@@ -18,7 +17,7 @@ const CategoryCreatePage = () => {
 
     const onFormikSubmit = async (values: ICategoryCreate) => {
         try {
-            const result = await http.post("api/category-create", values);
+            const result = await http.post("api/category", values);
             console.log("Category create", result);
             navigate("..");
         } catch (error) {
@@ -32,7 +31,7 @@ const CategoryCreatePage = () => {
         validationSchema: CategoryCreateSchema,
     })
 
-    const { values, errors, touched, handleSubmit, handleChange, setFieldValue } = formik;
+    const {values, errors, touched, handleSubmit, handleChange, setFieldValue} = formik;
 
     return (
         <>
@@ -47,7 +46,7 @@ const CategoryCreatePage = () => {
                         name="name"
                         className={classNames(
                             "form-control",
-                            { "is-invalid": touched.name && errors.name }
+                            {"is-invalid": touched.name && errors.name}
                         )}
                         value={values.name}
                         onChange={handleChange}
@@ -61,6 +60,25 @@ const CategoryCreatePage = () => {
                 </div>
 
                 <div className="mb-3">
+                    <label htmlFor="image">Фото</label>
+                    <input
+                        type="text"
+                        id="image"
+                        name="image"
+                        className={classNames(
+                            "form-control",
+                            {"is-invalid": touched.image && errors.image}
+                        )}
+                        value={values.image}
+                        onChange={handleChange}
+                        placeholder="Вкажіть фото"
+                    />
+                    {errors.image && touched.image && (
+                        <div className="invalid-feedback">{errors.image}</div>
+                    )}
+                </div>
+
+                <div className="mb-3">
                     <label htmlFor="description" className="form-label">Опис</label>
                     <input
                         type="text"
@@ -68,15 +86,15 @@ const CategoryCreatePage = () => {
                         name="description"
                         className={classNames(
                             "form-control",
-                            { "is-invalid": touched.description && errors.description }
+                            {"is-invalid": touched.description && errors.description}
                         )}
                         value={values.description}
                         onChange={handleChange}
                         placeholder="Введіть опис"
                     />
-                    {errors.name && touched.name && (
+                    {errors.description && touched.description && (
                         <div className="invalid-feedback">
-                            <span>{errors.name}</span>
+                            <span>{errors.description}</span>
                         </div>
                     )}
                 </div>

@@ -24,10 +24,13 @@ root.render(
 
       <Route path="/admin" element={<DefaultLayout />}>
         <Route index element={<App />} />
-        <Route path="categories">
+        <Route path="category">
           <Route index element={<CategoryListPage />} />
           <Route path="create" element={<CategoryCreatePage />} />
-          <Route path="edit/:id" element={<CategoryEditPage />} />
+          {/*<Route path="edit/:id" element={} />*/}
+          <Route path="edit">
+            <Route path={":id"} element={<CategoryEditPage />}/>
+          </Route>
         </Route>
       </Route>
     </Routes>

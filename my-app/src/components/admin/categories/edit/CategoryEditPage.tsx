@@ -1,7 +1,7 @@
 import { Link, useNavigate, useParams } from "react-router-dom";
 import uniqid from 'uniqid';
 import classNames from "classnames";
-import { ICategoryEdit } from "../types";
+import {ICategoryEdit, ICategoryItem} from "../types";
 import { useFormik } from "formik";
 import { CategoryEditSchema } from "../validation";
 import http from "../../../../http";
@@ -12,6 +12,7 @@ const CategoryEditPage = () => {
     const { id } = useParams();
 
     const init: ICategoryEdit = {
+        id: id ? Number(id) : 0,
         name: "",
         image: uniqid() + '.jpg',
         description: ""
@@ -20,9 +21,9 @@ const CategoryEditPage = () => {
     const onEditCategory = async (values: ICategoryEdit) => {
         console.log("EDIT VALUES", values);
         try {
-            const result = http.post(`api/category/edit/${id}`, values);
+            const result = await http.post(`api/category/edit/${id}`, values);
             console.log("RESULT", result);
-            navigate("..");
+            navigate("../..");
 
         } catch (err) {
             console.log("ERR RES", err);
@@ -39,7 +40,7 @@ const CategoryEditPage = () => {
     const { errors, values, touched, handleChange, handleSubmit, setFieldValue } = formik;
 
     useEffect(() => {
-        http.get(`api/category/${id}`)
+        http.get<ICategoryItem>(`api/category/${id}`)
             .then(resp => {
                 const { data } = resp;
                 console.log(data);
@@ -49,7 +50,7 @@ const CategoryEditPage = () => {
             }).catch(err => {
                 console.log("ERR", err);
             })
-    }, [])
+    }, [id]);
 
     return (
         <>
@@ -96,8 +97,8 @@ const CategoryEditPage = () => {
                     )}
                 </div>
                 <div className="d-flex justify-content-center">
-                    <button type="submit" className="btn btn-primary me-4 w-25">Змінити</button>
-                    <Link to=".." className="btn btn-warning w-25">Відхілити</Link>
+                    <button type="submit" className="btn btn-primary me-4 w-25">Зберегти</button>
+                    <Link to="../.." className="btn btn-warning w-25">Відхілити</Link>
                 </div>
             </form>
         </>
