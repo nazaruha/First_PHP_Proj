@@ -4,7 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\Category;
 use Illuminate\Http\Request;
-use Mockery\Exception;
+use Illuminate\Support\Stringable;
+use Intervention\Image\Facades\Image;
 use Validator;
 
 class CategoryController extends Controller
@@ -13,7 +14,6 @@ class CategoryController extends Controller
      * @OA\Get(
      *     tags={"Category"},
      *     path="/api/category",
-     *   security={{ "bearerAuth": {} }},
      *     @OA\Response(response="200", description="List Categories.")
      * )
      */
@@ -34,7 +34,7 @@ class CategoryController extends Controller
      *                 required={"name"},
      *                 @OA\Property(
      *                     property="image",
-     *                     type="string"
+     *                     type="file"
      *                 ),
      *                 @OA\Property(
      *                     property="name",
@@ -62,11 +62,17 @@ class CategoryController extends Controller
            'image'=>'required',
            'description'=>'required'
         ], $message);
-        if($validation->fails()) { // Якщо модель не валідна
+        if($validation->fails()) { # Якщо модель не валідна
             return response()->json($validation->errors(), 400,
                 ['Content-Type' => 'application/json;charset=UTF-8', 'Charset' => 'utf-8'], JSON_UNESCAPED_UNICODE);
         }
-        $category = Category::create($request->all());
+
+        if ($request->hasFile("image")) { // перевіряєм чи є в запросі є файл
+            $image = $request->file('image');
+            $fileName = $this->StoreImage($image);
+            $input["image"] = $fileName;
+        }
+        $category = Category::create($input);
         return response()->json($category, 201,
             ['Content-Type' => 'application/json;charset=UTF-8', 'Charset' => 'utf-8'], JSON_UNESCAPED_UNICODE); // Кодіровка гарненька. Не обов'зяково
     }
@@ -91,7 +97,7 @@ class CategoryController extends Controller
      *                 required={"name"},
      *                 @OA\Property(
      *                     property="image",
-     *                     type="string"
+     *                     type="file"
      *                 ),
      *                 @OA\Property(
      *                     property="name",
@@ -115,6 +121,7 @@ class CategoryController extends Controller
         }
 
         $input = $request->all();
+        $deleteImage = $category->image;
         $message = array (
             'name.required'=>'Вкажіть назву категорії',
             'image.required'=>'Вкажіть фото категорії',
@@ -130,10 +137,18 @@ class CategoryController extends Controller
                 ['Content-Type' => 'application/json;charset=UTF-8', 'Charset' => 'utf-8'], JSON_UNESCAPED_UNICODE);
         }
 
+        $this->DeleteImage($deleteImage);
+        if ($request->hasFile('image')) {
+            $storeImage = $request->file('image');
+            $fileName = $this->StoreImage($storeImage);
+            $input['image'] = $fileName;
+        }
+
         $category->update($input);
         return response()->json($category, 200,
             ['Content-Type' => 'application/json;charset=UTF-8', 'Charset' => 'utf-8'], JSON_UNESCAPED_UNICODE);
     }
+
     /**
      * @OA\Delete(
      *     tags={"Category"},
@@ -164,8 +179,33 @@ class CategoryController extends Controller
      */
     public function delete(Request $request, $id) {
         $category = Category::findOrFail($id);
+        $image = $category->image;
+        $this->DeleteImage($image); // need $this. Otherwise function will be undefined
         $category->delete();
         return 204;
+    }
+
+    private function StoreImage($image): string {
+        $sizes = [50, 150, 300, 600, 1200];
+        $fileName = uniqid().'.'.$image->getClientOriginalExtension();
+        foreach($sizes as $size) {
+            $fileSave = $size.'_'.$fileName;
+            $resizeImage = Image::make($image)->resize($size, null, function($cont) { // width, height, callback function
+                $cont->aspectRatio(); // зберегти співвідношення сторін, щоб фото не обрізало і не сплющувало
+            })->encode();
+            $path = public_path('uploads/'.$fileSave);
+            file_put_contents($path, $resizeImage);
+        }
+        return $fileName;
+    }
+    private function DeleteImage($image): void
+    {
+        $sizes = [50, 150, 300, 600, 1200];
+        foreach ($sizes as $size) {
+            $fileDelete = $size.'_'.$image;
+            $path = public_path('uploads/'.$fileDelete);
+            unlink($path);
+        }
     }
 
     /**
@@ -198,4 +238,6 @@ class CategoryController extends Controller
         return response()->json($category, 200,
             ['Content-Type' => 'application/json;charset=UTF-8', 'Charset' => 'utf-8'], JSON_UNESCAPED_UNICODE);
     }
+
+
 }
