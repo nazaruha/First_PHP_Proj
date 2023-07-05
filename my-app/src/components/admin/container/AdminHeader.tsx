@@ -1,3 +1,6 @@
+import {NavLink, useMatch} from "react-router-dom";
+import classNames from "classnames";
+
 const AdminHeader = () => {
     return (
         <>
@@ -12,9 +15,12 @@ const AdminHeader = () => {
                         </button>
                         <div className="collapse navbar-collapse" id="navbarCollapse">
                             <ul className="navbar-nav me-auto mb-2 mb-md-0">
-                                <li className="nav-item">
-                                    <a className="nav-link active" aria-current="page" href="#">Home</a>
-                                </li>
+                                <NavLink to={"/"} className={classNames(
+                                    "nav-link",
+                                    {'text-light': useMatch("/")}
+                                )}>
+                                    Головна
+                                </NavLink>
                                 <li className="nav-item">
                                     <a className="nav-link" href="#">Link</a>
                                 </li>

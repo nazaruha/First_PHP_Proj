@@ -1,3 +1,6 @@
+import classNames from "classnames";
+import {NavLink, useMatch} from "react-router-dom";
+
 const AdminSidebar = () => {
     return (
         <>
@@ -7,17 +10,21 @@ const AdminSidebar = () => {
                     <div className="offcanvas-body d-md-flex flex-column p-0 pt-lg-3 overflow-y-auto">
                         <ul className="nav flex-column">
                             <li className="nav-item">
-                                <a className="nav-link d-flex align-items-center gap-2 active" aria-current="page"
-                                   href="#">
+                                <NavLink to={"/admin"} className={classNames(
+                                    "nav-link d-flex align-items-center gap-2",
+                                )}>
                                     <i className="bi bi-house-fill"></i>
-                                    Dashboard
-                                </a>
+                                    Домашня сторінка
+                                </NavLink>
                             </li>
                             <li className="nav-item">
-                                <a className="nav-link d-flex align-items-center gap-2" href="#">
-                                    <i className="bi bi-file-earmark"></i>
-                                    Orders
-                                </a>
+                                <NavLink to={"category"} className={classNames(
+                                    "nav-link d-flex align-items-center gap-2",
+                                )}>
+                                    <i className="bi bi-collection"></i>
+                                    Категорії
+                                </NavLink>
+
                             </li>
                             <li className="nav-item">
                                 <a className="nav-link d-flex align-items-center gap-2" href="#">
