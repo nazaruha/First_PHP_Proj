@@ -1,6 +1,8 @@
 <?php
 
+use App\Http\Controllers\ProductController;
 use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\AuthController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -24,5 +26,18 @@ Route::post('/category', [CategoryController::class, "store"]);
 Route::post("/category/edit/{id}", [CategoryController::class, "put"]);
 Route::delete("/category/{id}", [CategoryController::class, "delete"]);
 Route::get("/category/{id}", [CategoryController::class, "getById"]);
+
+Route::post('/product', [ProductController::class, "store"]);
+
+Route::group([
+    'middleware' => 'api',
+    'prefix' => 'auth'
+], function ($router) {
+    Route::post('/login', [AuthController::class, 'login']);
+    Route::post('/register', [AuthController::class, 'register']);
+    Route::post('/logout', [AuthController::class, 'logout']);
+    Route::post('/refresh', [AuthController::class, 'refresh']);
+    Route::get('/user-profile', [AuthController::class, 'userProfile']);
+});
 
 
