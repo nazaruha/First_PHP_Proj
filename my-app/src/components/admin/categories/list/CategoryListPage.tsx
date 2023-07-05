@@ -1,15 +1,16 @@
 import { useEffect, useState } from "react";
 import { ICategoryItem } from "../types";
-import http from "../../../../http";
+import default_http from "../../../../http_common";
 import { Link } from "react-router-dom";
 import ModalDelete from "../../../common/ModalDelete";
+import { APP_ENV } from "../../../../env";
 
 const CategoryListPage = () => {
 
     const [categories, setCategories] = useState<ICategoryItem[]>([]);
 
     useEffect(() => {
-        http.get<ICategoryItem[]>("/api/category")
+        default_http.get<ICategoryItem[]>("/api/category")
             .then((resp) => {
                 const { data } = resp;
                 console.log("get categories", resp.data);
@@ -21,7 +22,7 @@ const CategoryListPage = () => {
 
     const onDeleteCategory = async (id: number) => {
         try {
-            const result = await http.delete(`api/category/${id}`)
+            const result = await default_http.delete(`api/category/${id}`)
             const lst = categories.filter(x => x.id !== id);
             setCategories(lst);
             console.log(result);
@@ -53,11 +54,13 @@ const CategoryListPage = () => {
                             <tr key={category.id}>
                                 <th scope="row">{category.id}</th>
                                 <td>{category.name}</td>
-                                <td>{category.image}</td>
+                                <td>
+                                    <img src={`${APP_ENV.BASE_URL}uploads\\50_${category.image}`} alt="ФОТО" width={50} />
+                                </td>
                                 <td>{category.description}</td>
                                 <td className="">
                                     <Link to={`edit/${category.id}`} className="btn btn-warning me-3">Змінити <i className="fa fa-pencil" aria-hidden="true"></i></Link>
-                                    <ModalDelete id={category.id} text={category.name} deleteFunc={onDeleteCategory}/>
+                                    <ModalDelete id={category.id} text={category.name} deleteFunc={onDeleteCategory} />
                                 </td>
                             </tr>
                         ))}

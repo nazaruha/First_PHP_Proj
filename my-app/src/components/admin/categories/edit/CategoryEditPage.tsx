@@ -1,27 +1,34 @@
 import { Link, useNavigate, useParams } from "react-router-dom";
-import uniqid from 'uniqid';
 import classNames from "classnames";
 import {ICategoryEdit, ICategoryItem} from "../types";
 import { useFormik } from "formik";
 import { CategoryEditSchema } from "../validation";
-import http from "../../../../http";
-import { useEffect } from "react";
+import http_common from "../../../../http_common";
+import {ChangeEvent, useEffect, useState} from "react";
+import defaultImage from "../../../../assets/select-image.png";
+import {APP_ENV} from "../../../../env";
+import selectImage from "../../../../assets/select-image.png";
 
 const CategoryEditPage = () => {
     const navigate = useNavigate();
     const { id } = useParams();
+    const [oldImage, setOldImage] = useState<string>("");
 
     const init: ICategoryEdit = {
         id: id ? Number(id) : 0,
         name: "",
-        image: uniqid() + '.jpg',
+        image: null,
         description: ""
     }
 
     const onEditCategory = async (values: ICategoryEdit) => {
         console.log("EDIT VALUES", values);
         try {
-            const result = await http.post(`api/category/edit/${id}`, values);
+            const result = await http_common.post(`api/category/edit/${id}`, values, {
+                headers: {
+                    "Content-Type": "multipart/form-data"
+                } // ЦЕЙ HEADERS ТРЕБА ЩОБ ФОТКА ПЕРЕДАВАЛАСЬ У СЕРВЕР
+            });
             console.log("RESULT", result);
             navigate("../..");
 
@@ -39,18 +46,37 @@ const CategoryEditPage = () => {
 
     const { errors, values, touched, handleChange, handleSubmit, setFieldValue } = formik;
 
+    const onChangeFileHandler = (e: ChangeEvent<HTMLInputElement>) => {
+        const files = e.target.files;
+        if (files) {
+            const file = files[0];
+            if (file) {
+                const allowedTypes = ["image/jpeg", "image/png", "image/gif"]
+                if (!allowedTypes.includes(file.type)) {
+                    alert("Недопустимий тип файлу!");
+                    return;
+                }
+                setFieldValue(e.target.name, file);
+                console.log(`${e.target.name}`);
+            }
+        }
+    }
+
     useEffect(() => {
-        http.get<ICategoryItem>(`api/category/${id}`)
+        http_common.get<ICategoryItem>(`api/category/${id}`)
             .then(resp => {
                 const { data } = resp;
                 console.log(data);
                 setFieldValue("name", data.name);
                 setFieldValue("description", data.description);
-                setFieldValue("image", data.image);
+                // setFieldValue("image", data.image);
+                setOldImage(`${APP_ENV.BASE_URL}uploads/300_${data.image}`)
             }).catch(err => {
                 console.log("ERR", err);
             })
     }, [id]);
+
+    const imgView = oldImage ? oldImage: defaultImage;
 
     return (
         <>
@@ -75,6 +101,29 @@ const CategoryEditPage = () => {
                             {errors.name}
                         </div>
                     )}
+                </div>
+                <div className="mb-3">
+                    <label htmlFor="image">
+                        Фото
+                        <img
+                            src={values.image == null ? imgView : URL.createObjectURL(values.image)}
+                            width="200"
+                            style={{objectFit: "contain", display: 'block', cursor: 'pointer'}}
+                            alt="ФОТОГРАФІЯ"
+                            className={classNames(
+                                "img-thumbnail d-block",
+                            )}
+                        />
+                    </label>
+                    <input
+                        type="file"
+                        id="image"
+                        name="image"
+                        accept="image/jpeg, image/png, image/gif" // обмеження для файлу
+                        className="d-none"
+                        // value={values.image}
+                        onChange={onChangeFileHandler}
+                    />
                 </div>
                 <div className="mb-3">
                     <label htmlFor="description" className="form-label">Опис</label>

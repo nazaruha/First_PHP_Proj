@@ -142,6 +142,8 @@ class CategoryController extends Controller
             $storeImage = $request->file('image');
             $fileName = $this->StoreImage($storeImage);
             $input['image'] = $fileName;
+        } else {
+            $input['image'] = $category->image;
         }
 
         $category->update($input);
