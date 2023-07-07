@@ -5,10 +5,14 @@ import {useDispatch} from "react-redux";
 import default_http from "../../../http_common";
 import {useFormik} from "formik";
 import classNames from "classnames";
+import jwtDecode from "jwt-decode";
+import {AuthUserActionType, IUser} from "../types";
 
 
 const LoginPage = () => {
 
+    const dispatch = useDispatch(); // щоб визвать якийсь action в редаксі
+    const navigate = useNavigate();
     const init: ILoginPage = {
         email: "",
         password: ""
@@ -18,14 +22,24 @@ const LoginPage = () => {
 
     // const [data, setData] = useState<ILoginPage>(init);
     // // errors useState using ILoginError
-    // const navigate = useNavigate();
-    // const dispatch = useDispatch();
 
     const onSubmitFormik = async (values: ILoginPage)=> {
         console.log("Values", values);
         try {
             const result = await default_http.post<ILoginResult>("api/auth/login", values);
-            console.log("Login is good", result);
+            const {data} = result;
+            const token = data.access_token;
+            localStorage.token = token;
+            let user = jwtDecode(token) as IUser;
+            dispatch({
+                type: AuthUserActionType.LOGIN_USER,
+                payload: {
+                    email: user.email,
+                    name: user.name
+                }
+            });
+            navigate("/");
+            // console.log("Login is good", user);
 
         } catch {
             setMessage("Дані вказано невірно")
