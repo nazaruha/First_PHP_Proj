@@ -10,10 +10,25 @@ import reportWebVitals from './reportWebVitals';
 import {Provider} from "react-redux";
 import {store} from "./store";
 import {BrowserRouter} from "react-router-dom";
+import jwtDecode from "jwt-decode";
+import {AuthUserActionType, IUser} from "./components/auth/types";
 
 const root = ReactDOM.createRoot(
     document.getElementById('root') as HTMLElement
 );
+
+if (localStorage.token) {
+    const token = localStorage.token;
+    const user = jwtDecode(token) as IUser;
+    store.dispatch({
+        type: AuthUserActionType.LOGIN_USER,
+        payload: {
+            email: user.email,
+            name: user.name
+        }
+    });
+}
+
 root.render(
     //<React.StrictMode> -> ЦЕ ТРЕБА  УБРАТЬ, ЩОБ НЕ БУЛО ДУПЛІКАТІВ ОТРИМАННЯ ДАНИХ З СЄРВАКА
     <Provider store={store}>
