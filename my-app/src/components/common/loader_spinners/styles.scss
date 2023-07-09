@@ -1,0 +1,36 @@
+//.oval-spinner {
+//  //background: aliceblue;
+//  //opacity: 80%;
+//  //min-height: 90vh;
+//  //display: flex;
+//  //flex-direction: column;
+//  //justify-content: center;
+//  //align-items: center;
+//  position: absolute;
+//  top: 50%;
+//  left: 50%;
+//  background: black;
+//}
+
+.my_spinner {
+  position: fixed;
+  background-color: rgba(246, 248, 246, 0.733);
+  width: 100%;
+  height: 100%;
+  top: 50%;
+  left: 50%;
+  z-index: 100;
+  -webkit-transform: translate(-50%, -50%);
+  transform: translate(-50%, -50%);
+}
+
+.spinner {
+  position: fixed;
+  background-color: #00000000;
+  width: 120px;
+  height: 120px;
+  top: 50%;
+  left: 50%;
+  -webkit-transform: translate(-50%, -50%);
+  transform: translate(-50%, -50%);
+}
