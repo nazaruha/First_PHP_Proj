@@ -10,11 +10,15 @@ import React from "react";
 import AdminLayout from "./components/admin/container/AdminLayout";
 import LoginPage from "./components/auth/login/LoginPage";
 import RegisterPage from "./components/auth/register/RegisterPage";
+import Loader from "./components/common/loader_spinners/Loader/Loader";
+import ToastNotification from "./components/common/ToastNotification/ToastNotification";
 
 const App = () => {
 
     return (
         <>
+            <Loader/> {/* підгрузили наш лоадер */}
+            <ToastNotification/> {/* щоб нотифікація висвітлювалась повсюду */}
             <Routes>
                 <Route path="/" element={<DefaultLayout/>}>
                     <Route index element={<HomePage/>}/>

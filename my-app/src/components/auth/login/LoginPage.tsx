@@ -1,5 +1,4 @@
 import {ILoginPage, ILoginResult} from "./types";
-import {useState} from "react";
 import {useNavigate} from "react-router-dom";
 import {useDispatch} from "react-redux";
 import default_http from "../../../http_common";
@@ -7,21 +6,19 @@ import {useFormik} from "formik";
 import classNames from "classnames";
 import jwtDecode from "jwt-decode";
 import {AuthUserActionType, IUser} from "../types";
+import { ToastActionTypes} from "../../../store/reducers/ToastReducer/types";
 
 
 const LoginPage = () => {
-
     const dispatch = useDispatch(); // щоб визвать якийсь action в редаксі
     const navigate = useNavigate();
+
     const init: ILoginPage = {
         email: "",
         password: ""
     };
 
-    const [message, setMessage] = useState<string>("");
-
-    // const [data, setData] = useState<ILoginPage>(init);
-    // // errors useState using ILoginError
+    // const [message, setMessage] = useState<string>("");
 
     const onSubmitFormik = async (values: ILoginPage)=> {
         console.log("Values", values);
@@ -38,11 +35,25 @@ const LoginPage = () => {
                     name: user.name
                 }
             });
+            dispatch({
+                type: ToastActionTypes.SET_TOAST,
+                payload: {
+                    text: "Вхід успішний",
+                    type: "success",
+                    isShow: true
+                }
+            })
             navigate("/");
-            // console.log("Login is good", user);
-
         } catch {
-            setMessage("Дані вказано невірно")
+            // setMessage("Дані вказано невірно")
+            dispatch({
+                type: ToastActionTypes.SET_TOAST,
+                payload: {
+                    text: "Дані вказано невірно",
+                    type: "error",
+                    isShow: true
+                }
+            })
         }
     }
 
@@ -59,11 +70,11 @@ const LoginPage = () => {
             <h1 className={"text-center"}>Вхід</h1>
 
             <form onSubmit={handleSubmit} className="col-md-10 w-50 container-fluid">
-                {message && (
-                    <div className="alert alert-danger text-center fw-bold" role="alert">
-                        Не вірно введені дані
-                    </div>
-                )}
+                {/*{message && (*/}
+                {/*    <div className="alert alert-danger text-center fw-bold" role="alert">*/}
+                {/*        Не вірно введені дані*/}
+                {/*    </div>*/}
+                {/*)}*/}
                 <div className="mb-3">
                     <label htmlFor="email" className="form-label">Пошта</label>
                     <input
