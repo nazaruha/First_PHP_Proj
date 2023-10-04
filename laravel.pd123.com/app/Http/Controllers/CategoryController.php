@@ -18,7 +18,12 @@ class CategoryController extends Controller
      * )
      */
     public function index() {
-        $list = Category::all();
+        $list = \App\Models\Category::all();
+        foreach($list as $category) {
+            return response()->json($category->products, 200,
+                ['Content-Type' => 'application/json;charset=UTF-8', 'Charset' => 'utf-8'], JSON_UNESCAPED_UNICODE);
+            // Кодіровка гарненька. Не обов'зяково
+        }
         return response()->json($list, 200,
             ['Content-Type' => 'application/json;charset=UTF-8', 'Charset' => 'utf-8'], JSON_UNESCAPED_UNICODE);
             // Кодіровка гарненька. Не обов'зяково

@@ -7,6 +7,7 @@ import selectImage from "../../../assets/select-image.png";
 import {ChangeEvent, useRef, useState} from "react";
 import default_http from "../../../http_common";
 import {useNavigate} from "react-router-dom";
+import CropperModal from "../../common/CropperModal";
 
 const RegisterPage = () => {
     const navigate = useNavigate();
@@ -26,34 +27,7 @@ const RegisterPage = () => {
     const [imageError, setImageError] = useState<string>("");
     const [errorMessage, setErrorMessage] = useState<string>("");
 
-    const onChangeImage = (e: ChangeEvent<HTMLInputElement>) => {
-        console.log("1");
-        // e.preventDefault();
-        const files = e.target.files;
-        console.log("2");
-        if (files) {
-            console.log("HandleImage", files[0]);
-            if (files[0] === undefined) return;
-            const fileRef = files[0];
-            const allowedTypes = ["image/jpeg", "image/png", "image/gif"]
-            if (!allowedTypes.includes(fileRef.type)) {
-                alert("Недопустимий тип файлу")
-                return;
-            }
-            setFieldValue("image", fileRef);
-            const reader = new FileReader();
-            reader.readAsDataURL(fileRef);
-            reader.onload = function () {
-                if (reader.result !== null) {
-                    setImageBase64(reader.result.toString());
-                    setImageError("");
-                }
-                else {
-                    alert("Пусте фото")
-                }
-            }
-        }
-    }
+
 
     const onSubmitRegister = async (values: IRegisterPage) => {
         if (values.image === null) {
@@ -159,36 +133,7 @@ const RegisterPage = () => {
                         </span>
                     )}
                 </div>
-                <div className="mb-3">
-                    <label htmlFor="image">
-                        Фото
-                        <img
-                            src={values.image == null ? selectImage : imageBase64}
-                            width="200"
-                            style={{ objectFit: "contain", display: 'block' }}
-                            alt="ФОТОГРАФІЯ"
-                            className={classNames(
-                                "img-thumbnail d-block",
-                                {"border border-danger-subtle" : imageError !== ""}
-                            )}
-                        />
-                    </label>
-
-                    <input
-                        type="file"
-                        id="image"
-                        name="image"
-                        accept="image/jpeg, image/png, image/gif" // обмеження для файлу
-                        className="d-none"
-                        ref = {imageRef}
-                        onChange={onChangeImage}
-                        placeholder="Вкажіть фото"
-                    />
-
-                    {imageError !== "" && (
-                        <span className={"d-block invalid-feedback"}>{imageError}</span>
-                    )}
-                </div>
+                <CropperModal onChange={setFieldValue} field={"image"} value={values.image} error={errors.image} touched={touched.image} />
                 <div className="mb-3">
                     <label htmlFor="phone" className="label-control">Телефон</label>
                     <input
